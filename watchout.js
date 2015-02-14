@@ -49,9 +49,9 @@ var gameTurn = function() {
 
   gameboard.selectAll('circle')
             .data(newPositions)
+            .transition()
             .attr("cx", function(d, i){return newPositions[i].x})
             .attr("cy", function(d, i){return newPositions[i].y})
-            .transition()
             .duration(2000);
 }
 
