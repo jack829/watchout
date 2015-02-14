@@ -15,27 +15,26 @@ var axes = {
   y: d3.scale.linear().domain([0,100]).range([0,gameOptions.height])
 }
 
-var createEnemies = function() {
-  var enemyData = [];
-  for (var i = 0; i < gameOptions.nEnemies; i++) {
-    var enemy = {};
-    enemy.id = i;
-    enemy.x = Math.random() * gameOptions.width;
-    enemy.y = Math.random() * gameOptions.height;
-    enemyData.push(enemy);
-  }
+var numEnemies = gameOptions.nEnemies
+var enemies =function(numEnemies){
+  var enemyArray = []
+  for (var i = 0; i < numEnemies; i++){
+    var single = {};
+      single.id = i;
+      single.x = Math.random() * gameOptions.width;
+      single.y = Math.random() * gameOptions.height;
+      enemyArray.push(single);
+    }
+  return enemyArray;
+}(numEnemies);  
+//debugger;
 
-  return enemyData;
-};  
+var player = {
 
-var createPlayer = function(){
-  var playerData = [];
-  var player = {};
-  player.x = gameOptions.width/2;
-  player.y = gameOptions.height/2;
-  playerData.push(player);
-  return playerData;
-};
+  cx : gameOptions.width/2,
+  cy : gameOptions.height/2
+  
+}
 
 var dragCircle = d3.behavior.drag()
     .on('drag', function (d, i) {
@@ -49,47 +48,45 @@ var gameboard = d3.select('body').append('svg')
                   .attr('height', gameOptions.height);
                   
 
-var originalPlayer = createPlayer();
+
 //debugger;
 
 var player = gameboard.selectAll('circle')
-                .data(originalPlayer)
+                .data([player])
                 .enter()
                 .append('circle')
                 .attr("class", "player")
-                .attr("cx", function(d){return d.x;})
-                .attr("cy", function(d){return d.y;})
+                .attr("cx", function(d){return d.cx;})
+                .attr("cy", function(d){return d.cy;})
                 .attr('r', 10)
-                .style("fill", "red")
-                .call(dragCircle);
+                .call(dragCircle)
+                .style("fill", "red");
 //debugger;
-var enemyPositions = createEnemies(); 
 
-var enemies = gameboard.selectAll('circle')
-                .data(enemyPositions)
+
+var placeenemies = gameboard.selectAll('circle.update')
+                .data(enemies)
                 .enter()
                 .append('circle')
-                .attr("class", "enemy")
-                .attr("cx", function(d,i){return enemyPositions[i].x})
-                .attr("cy", function(d,i){return enemyPositions[i].y})
+                .attr("cx", function(d,i){return d.cx})
+                .attr("cy", function(d,i){return d.cy})
                 .attr("r", 5)
                 .style("fill", "black");
 
 
 
-var gameTurn = function() {
-  var newPositions = createEnemies();
+var update = function(data) {
 
-  gameboard.selectAll('circle.enemy')
-            .data(newPositions)
-            .transition()
-            .attr("cx", function(d, i){return newPositions[i].x})
-            .attr("cy", function(d, i){return newPositions[i].y})
-            .duration(2000);
+  placeenemies.attr('class','update')
+            .transition().duration(2000)
+            .attr("cx", function(d){return d.x = Math.random() * gameOptions.width})
+            .attr("cy", function(d){return d.y = Math.random() * gameOptions.height});
+            
 };
 
-gameTurn();
-setInterval(gameTurn, 2000);
+update(enemies);
+//debugger;
+setInterval(function(){update(enemies);}, 2000);
 
 
 
