@@ -1,5 +1,5 @@
 var gameOptions = {
-  heigth: 450,
+  height: 450,
   width: 700,
   nEnemies: 30,
   padding: 20
@@ -10,31 +10,48 @@ var gameStats = {
   bestScore: 0
 };
 
-var size = {
-  h: 450,
-  w: 700
+var axes = {
+  x: d3.scale.linear().domain([0,100]).range([0,gameOptions.width]),
+  y: d3.scale.linear().domain([0,100]).range([0,gameOptions.height])
 }
+var createEnemies = function() {
+  var enemyData = [];
+  for (var i = 0; i < gameOptions.nEnemies; i++) {
+    var enemy = {};
+    enemy.id = i;
+    enemy.x = Math.random() * 100;
+    enemy.y = Math.random() * 100;
+    enemyData.push(enemy);
+  }
 
-var dataset = [2, 5, 8, 11];
+  return enemyData;
+};  
 
-var svg = d3.select('body').append('svg')
-        .attr('width', 700)
-        .attr('height', 450);
-     
+var gameboard = d3.select('body').append('svg')
+        .attr('width', gameOptions.width)
+        .attr('height', gameOptions.height);
 
-
-var circles = svg.selectAll('circle')
-                .data(dataset)
+var enemyPositions = createEnemies(); 
+    
+var circles = gameboard.selectAll('circle')
+                .data(enemyPositions)
                 .enter()
                 .append('circle');
 
-circles.attr('cx', function(d, i){
-                return (i * 50) + 25;
-        })
-        .attr('cy', size.h/2)
-        .attr('r', function(d) {
-                return d;
-        });                
+
+circles.attr("cx",function(d, i){return 100 * (i+1)})
+        .attr("cy", 100)
+        .attr("r", 20)
+        .style("fill", "black");
+
+
+
+// var circles = svg.selectAll('circle')
+//                 .data()
+//                 .enter()
+//                 .append('circle');
+
+
 // var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 // var width = 960,
