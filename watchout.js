@@ -29,21 +29,20 @@ var createEnemies = function() {
 };  
 
 var gameboard = d3.select('body').append('svg')
-        .attr('width', gameOptions.width)
-        .attr('height', gameOptions.height);
+                  .attr('width', gameOptions.width)
+                  .attr('height', gameOptions.height);
 
 var enemyPositions = createEnemies(); 
 
 var enemies = gameboard.selectAll('circle')
                 .data(enemyPositions)
                 .enter()
-                .append('circle');
+                .append('circle')
+                .attr("cx", function(d,i){return enemyPositions[i].x})
+                .attr("cy", function(d,i){return enemyPositions[i].y})
+                .attr("r", 5)
+                .style("fill", "black");
 
-
-enemies.attr("cx",function(d,i){return enemyPositions[i].x})
-        .attr("cy", function(d,i){return enemyPositions[i].y})
-        .attr("r", 5)
-        .style("fill", "black");
 
 var gameTurn = function() {
   var newPositions = createEnemies();
@@ -57,6 +56,9 @@ var gameTurn = function() {
 }
 
 gameTurn();
-setInterval(gameTurn, 2000);
+setInterval(gameTurn, 1000);
+
+
+
 
 
