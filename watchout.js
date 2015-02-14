@@ -19,8 +19,8 @@ var createEnemies = function() {
   for (var i = 0; i < gameOptions.nEnemies; i++) {
     var enemy = {};
     enemy.id = i;
-    enemy.x = Math.random() * 100;
-    enemy.y = Math.random() * 100;
+    enemy.x = Math.random() * gameOptions.width;
+    enemy.y = Math.random() * gameOptions.height;
     enemyData.push(enemy);
   }
 
@@ -32,16 +32,16 @@ var gameboard = d3.select('body').append('svg')
         .attr('height', gameOptions.height);
 
 var enemyPositions = createEnemies(); 
-    
+
 var circles = gameboard.selectAll('circle')
                 .data(enemyPositions)
                 .enter()
                 .append('circle');
 
 
-circles.attr("cx",function(d, i){return 100 * (i+1)})
-        .attr("cy", 100)
-        .attr("r", 20)
+circles.attr("cx",function(d,i){return enemyPositions[i].x})
+        .attr("cy", function(d,i){return enemyPositions[i].y})
+        .attr("r", 5)
         .style("fill", "black");
 
 
