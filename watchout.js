@@ -73,25 +73,26 @@ var placeenemies = gameboard.selectAll('circle.update')
                 .data(enemies)
                 .enter()
                 .append('circle')
-                .attr("cx", function(d,i){return d.cx})
-                .attr("cy", function(d,i){return d.cy})
+                .attr("cx", function(d,i){return d.x})
+                .attr("cy", function(d,i){return d.y})
                 .attr("r", 10)
-                .style("fill", "black");
+                //.style("fill", "black")
+                .style("background-image", "url('asteroid.png)");
 
 
 
 var update = function(data) {
-
-  placeenemies.attr('class','update')
-            .transition().duration(2000)
+  data.transition().duration(2000)
             .attr("cx", function(d){return d.x = Math.random() * gameOptions.width})
-            .attr("cy", function(d){return d.y = Math.random() * gameOptions.height});
-            
+            .attr("cy", function(d){return d.y = Math.random() * gameOptions.height})
+            .each('end', function(){
+              update(d3.select(this));
+            });       
 };
 
-update(enemies);
+update(placeenemies);
 //debugger;
-setInterval(function(){update(enemies);}, 2000);
+//setInterval(function(){update(enemies);}, 2000);
 
 var scoreTicker = function() {
   score = score + 1;
@@ -104,10 +105,11 @@ var prevCollision = false;
 
 var detectCollisions = function() {
   var collision = false;
-
-  placeenemies.each(function(enemy) {
-    var x = enemy.x - player.x;
-    var y = enemy.y - player.y;
+  placeenemies.each(function() {
+    var cx = d3.select(this).attr('cx');
+    var cy = d3.select(this).attr('cy');
+    var x = cx - player.x;
+    var y = cy - player.y;
     if (Math.sqrt(x*x + y*y) < 20) {
       collision = true;
     }
@@ -123,7 +125,7 @@ var detectCollisions = function() {
   prevCollision = collision;
 };
 
-setInterval(detectCollisions, 100);
+d3.timer(detectCollisions);
 
 
 
