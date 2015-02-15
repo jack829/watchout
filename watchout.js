@@ -2,7 +2,6 @@ var gameOptions = {
   height: 450,
   width: 700,
   nEnemies: 30,
-  padding: 20
 };
 
 var score = 0;
@@ -14,11 +13,6 @@ var updateScores = function() {
   d3.select('.scoreboard .current span').text(score);
   d3.select('.scoreboard .collisions span').text(collisionCount);
 };
-
-var axes = {
-  x: d3.scale.linear().domain([0,100]).range([0,gameOptions.width]),
-  y: d3.scale.linear().domain([0,100]).range([0,gameOptions.height])
-}
 
 var numEnemies = gameOptions.nEnemies
 var enemies =function(numEnemies){
@@ -72,19 +66,24 @@ var player1 = gameboard.selectAll('circle')
 var placeenemies = gameboard.selectAll('circle.update')
                 .data(enemies)
                 .enter()
-                .append('circle')
-                .attr("cx", function(d,i){return d.x})
-                .attr("cy", function(d,i){return d.y})
-                .attr("r", 10)
-                //.style("fill", "black")
-                .style("background-image", "url('asteroid.png)");
+                .append("svg:image")
+                .attr('x',function(d,i){return d.x})
+                .attr('y',function(d,i){return d.y})
+                .attr('width', 20)
+                .attr('height', 24)
+                .attr("xlink:href", "Shuriken.png");
+                // .attr("cx", function(d,i){return d.x})
+                // .attr("cy", function(d,i){return d.y})
+                // .attr("r", 10)
+                // //.style("fill", "black")
+                // .style("background-image", "url('asteroid.png)");
 
 
 
 var update = function(data) {
   data.transition().duration(2000)
-            .attr("cx", function(d){return d.x = Math.random() * gameOptions.width})
-            .attr("cy", function(d){return d.y = Math.random() * gameOptions.height})
+            .attr("x", function(d){return d.x = Math.random() * gameOptions.width})
+            .attr("y", function(d){return d.y = Math.random() * gameOptions.height})
             .each('end', function(){
               update(d3.select(this));
             });       
@@ -106,8 +105,8 @@ var prevCollision = false;
 var detectCollisions = function() {
   var collision = false;
   placeenemies.each(function() {
-    var cx = d3.select(this).attr('cx');
-    var cy = d3.select(this).attr('cy');
+    var cx = d3.select(this).attr('x');
+    var cy = d3.select(this).attr('y');
     var x = cx - player.x;
     var y = cy - player.y;
     if (Math.sqrt(x*x + y*y) < 20) {
